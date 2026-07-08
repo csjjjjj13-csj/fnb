@@ -26,6 +26,21 @@ document.getElementById('form-tabs').addEventListener('click', e => {
   document.querySelector(`.form-panel[data-panel="${btn.dataset.tab}"]`).classList.add('active');
 });
 
+// A freshly-uploaded image may 404 for a little while until GitHub Pages finishes
+// rebuilding and publishing it. Retry a few times with growing delays before
+// giving up, so the thumbnail preview in the form doesn't just look "broken".
+function retryPreviewImg(imgEl, originalSrc, attempt) {
+  attempt = attempt || 1;
+  if (attempt > 5) {
+    imgEl.alt = '아직 반영되지 않음 (잠시 후 새로고침)';
+    return;
+  }
+  setTimeout(() => {
+    imgEl.onerror = () => retryPreviewImg(imgEl, originalSrc, attempt + 1);
+    imgEl.src = originalSrc + (originalSrc.includes('?') ? '&' : '?') + 'retry=' + Date.now();
+  }, attempt * 3000);
+}
+
 // ---- mini field renderers used inside repeater rows ----
 function renderTextMiniField(row, f) {
   const wrap = document.createElement('div');
@@ -44,6 +59,16 @@ function renderTextMiniField(row, f) {
   return wrap;
 }
 
+// NOTE: the upload button below must NEVER have its .textContent set directly —
+// the hidden <input type=file> lives inside the same <label> as a DOM child, and
+// setting label.textContent replaces (destroys) all of its children, including
+// that input. That was the bug that made the "이미지 선택"/"파일 선택" button stop
+// working after the very first upload: the button text was reset via
+// `label.textContent = '...'`, which silently removed the file input from the
+// DOM, so future clicks on the button no longer opened a file picker at all.
+// Fix: keep a separate <span> for the button label text, and only ever mutate
+// that span's textContent — the file input stays a permanent, untouched child.
+
 function renderImageMiniField(row, f) {
   const wrap = document.createElement('div');
   wrap.className = 'image-field-mini';
@@ -51,24 +76,31 @@ function renderImageMiniField(row, f) {
   labelEl.textContent = f.label || '이미지';
   const preview = document.createElement('div');
   function refresh() {
-    preview.innerHTML = row[f.key]
-      ? `<img class="thumb" src="${row[f.key]}" alt="">`
-      : '<span class="hint">등록된 이미지 없음</span>';
+    if (row[f.key]) {
+      preview.innerHTML = `<img class="thumb" src="${row[f.key]}" alt="">`;
+      const imgEl = preview.querySelector('img');
+      imgEl.onerror = () => retryPreviewImg(imgEl, row[f.key]);
+    } else {
+      preview.innerHTML = '<span class="hint">등록된 이미지 없음</span>';
+    }
   }
   refresh();
+
   const fileLabel = document.createElement('label');
   fileLabel.className = 'btn btn-sm file-upload-btn';
-  fileLabel.textContent = '이미지 선택';
+  const btnText = document.createElement('span');
+  btnText.textContent = '이미지 선택';
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
   fileInput.style.display = 'none';
-  fileLabel.appendChild(fileInput);
+  fileLabel.append(btnText, fileInput);
+
   fileInput.addEventListener('change', async () => {
     const file = fileInput.files[0];
     if (!file) return;
     if (!currentSlug()) { alert('먼저 기본정보 탭에서 슬러그를 입력해주세요.'); fileInput.value = ''; return; }
-    fileLabel.textContent = '업로드중...';
+    btnText.textContent = '업로드중...';
     try {
       const path = await uploadImageFile(file, currentSlug());
       row[f.key] = path;
@@ -76,7 +108,7 @@ function renderImageMiniField(row, f) {
     } catch (e) {
       alert('이미지 업로드 실패: ' + e.message);
     }
-    fileLabel.textContent = '이미지 선택';
+    btnText.textContent = '이미지 선택';
     fileInput.value = '';
   });
   wrap.append(labelEl, preview, fileLabel);
@@ -99,19 +131,22 @@ function renderFileMiniField(row, f) {
     }
   }
   refresh();
+
   const fileLabel = document.createElement('label');
   fileLabel.className = 'btn btn-sm file-upload-btn';
-  fileLabel.textContent = '파일 선택';
+  const btnText = document.createElement('span');
+  btnText.textContent = '파일 선택';
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = f.accept || '';
   fileInput.style.display = 'none';
-  fileLabel.appendChild(fileInput);
+  fileLabel.append(btnText, fileInput);
+
   fileInput.addEventListener('change', async () => {
     const file = fileInput.files[0];
     if (!file) return;
     if (!currentSlug()) { alert('먼저 기본정보 탭에서 슬러그를 입력해주세요.'); fileInput.value = ''; return; }
-    fileLabel.textContent = '업로드중...';
+    btnText.textContent = '업로드중...';
     try {
       const path = await uploadPresentationFile(file, currentSlug());
       row[f.key] = path;
@@ -119,7 +154,7 @@ function renderFileMiniField(row, f) {
     } catch (e) {
       alert('파일 업로드 실패: ' + e.message);
     }
-    fileLabel.textContent = '파일 선택';
+    btnText.textContent = '파일 선택';
     fileInput.value = '';
   });
   wrap.append(labelEl, info, fileLabel);
@@ -225,10 +260,6 @@ function setupLogoField(initialPath) {
   logoPath = row.logo;
   const el = renderImageMiniField(row, { key: 'logo', label: '' });
   wrap.appendChild(el);
-  const origInput = el.querySelector('input[type=file]');
-  origInput.addEventListener('change', () => {
-    setTimeout(() => { logoPath = row.logo; }, 0);
-  });
   // poll row.logo -> logoPath after upload completes (upload is async inside renderImageMiniField)
   const observer = setInterval(() => { logoPath = row.logo; }, 500);
   window.addEventListener('beforeunload', () => clearInterval(observer));

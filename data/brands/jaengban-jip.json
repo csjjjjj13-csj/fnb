@@ -2,7 +2,7 @@
   "slug": "jaengban-jip",
   "name": "쟁반집",
   "tagline": "정성 가득한 술상 한 상",
-  "color": "#8b3a2f",
+  "color": "#8B3A2F",
   "createdAt": "2026-01-01T00:00:00.000Z",
   "logo": "",
   "brandImages": [],
@@ -15,16 +15,8 @@
     "differentiation": "매일 아침 손질하는 제철 재료와 정성스러운 플레이팅"
   },
   "brandColors": [
-    {
-      "name": "메인 브라운",
-      "hex": "#8B3A2F",
-      "usage": "로고, 간판"
-    },
-    {
-      "name": "포인트 베이지",
-      "hex": "#F2ECE1",
-      "usage": "메뉴판 배경"
-    }
+    { "name": "메인 브라운", "hex": "#8B3A2F", "usage": "로고, 간판" },
+    { "name": "포인트 베이지", "hex": "#F2ECE1", "usage": "메뉴판 배경" }
   ],
   "copywriting": {
     "mainSlogan": "오늘 하루, 쟁반 가득 위로 한 상",
@@ -34,14 +26,7 @@
     ]
   },
   "menu": {
-    "lunch": [
-      {
-        "name": "ㅇㅀ",
-        "price": 123123,
-        "cost": 1232,
-        "desc": "ㄴㅇㄹㄴㅇㄹ"
-      }
-    ],
+    "lunch": [],
     "dinner": []
   },
   "seasonMenu": [],
