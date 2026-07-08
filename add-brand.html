@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>새 브랜드 추가 - 브랜드 허브</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">← 브랜드 허브</a>
+  </div>
+</header>
+
+<main class="container">
+  <h1>새 브랜드 추가</h1>
+  <p class="lead">폼을 채우면 브랜드 데이터 JSON 파일을 만들어줍니다. 이 사이트는 서버가 없기 때문에,
+  다운로드한 파일을 직접 <code>data/brands/</code> 폴더에 넣고 GitHub에 올려야 실제로 반영됩니다.</p>
+
+  <div class="form-section">
+    <h2>1. 기본 정보</h2>
+    <div class="form-grid">
+      <div class="field"><label>브랜드명</label><input id="f-name" placeholder="예: 쟁반집"></div>
+      <div class="field"><label>슬러그(영문 파일명)</label><input id="f-slug" placeholder="예: jaengban-jip"></div>
+      <div class="field"><label>대표 컬러</label><input id="f-color" type="color" value="#8B3A2F"></div>
+      <div class="field"><label>한 줄 태그라인</label><input id="f-tagline" placeholder="예: 오늘, 맛있는 한 쟁반."></div>
+    </div>
+    <p class="hint">슬러그는 URL과 파일명에 쓰입니다. 영문 소문자와 하이픈만 사용하세요. 브랜드명을 입력하면 자동으로 채워집니다.</p>
+  </div>
+
+  <div class="form-section">
+    <h2>2. 개요</h2>
+    <div class="form-grid">
+      <div class="field"><label>한 줄 소개</label><input id="f-oneliner"></div>
+      <div class="field" style="grid-column:1/-1;"><label>브랜드 스토리</label><textarea id="f-story" rows="4"></textarea></div>
+      <div class="field"><label>컨셉</label><input id="f-concept"></div>
+      <div class="field"><label>타깃 고객</label><input id="f-target"></div>
+      <div class="field" style="grid-column:1/-1;"><label>차별화 포인트</label><textarea id="f-diff" rows="3"></textarea></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h2>3. 브랜드컬러</h2>
+    <div id="colors-list"></div>
+    <button class="btn add-row-btn" id="add-color">+ 컬러 추가</button>
+  </div>
+
+  <div class="form-section">
+    <h2>4. 카피문구</h2>
+    <div class="field"><label>메인 슬로건</label><input id="f-main-slogan" placeholder="예: 오늘, 맛있는 한 쟁반."></div>
+    <div id="subslogans-list" style="margin-top:12px;"></div>
+    <button class="btn add-row-btn" id="add-subslogan">+ 보조 카피 추가</button>
+  </div>
+
+  <div class="form-section">
+    <h2>5. 메뉴라인업 - 점심</h2>
+    <div id="lunch-list"></div>
+    <button class="btn add-row-btn" id="add-lunch">+ 점심 메뉴 추가</button>
+  </div>
+
+  <div class="form-section">
+    <h2>6. 메뉴라인업 - 저녁 · 술상</h2>
+    <div id="dinner-list"></div>
+    <button class="btn add-row-btn" id="add-dinner">+ 저녁 메뉴 추가</button>
+  </div>
+
+  <div class="form-section">
+    <h2>7. 시즌메뉴</h2>
+    <div id="season-list"></div>
+    <button class="btn add-row-btn" id="add-season">+ 시즌메뉴 추가</button>
+  </div>
+
+  <div class="form-section">
+    <h2>8. 이벤트</h2>
+    <div id="events-list"></div>
+    <button class="btn add-row-btn" id="add-event">+ 이벤트 추가</button>
+  </div>
+
+  <div class="form-section">
+    <h2>9. 저장하기</h2>
+    <div class="step"><div class="step-num">1</div><div>아래 버튼으로 JSON 내용을 확인하고 다운로드하세요.</div></div>
+    <div class="step"><div class="step-num">2</div><div>다운로드된 파일을 <code>data/brands/</code> 폴더에 넣으세요.</div></div>
+    <div class="step"><div class="step-num">3</div><div>"index.json에 추가할 코드 복사"로 복사한 내용을 <code>data/brands/index.json</code> 배열에 붙여넣으세요.</div></div>
+    <div class="step"><div class="step-num">4</div><div>git add, commit, push 하면 사이트에 새 브랜드가 나타납니다.</div></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+      <button class="btn" id="btn-preview">JSON 미리보기</button>
+      <button class="btn btn-primary" id="btn-download">JSON 다운로드</button>
+      <button class="btn" id="btn-copy-index">index.json에 추가할 코드 복사</button>
+    </div>
+    <pre id="json-preview" style="display:none;margin-top:14px;"></pre>
+  </div>
+</main>
+
+<script src="assets/js/add-brand.js"></script>
+</body>
+</html>

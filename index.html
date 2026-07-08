@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>브랜드 허브</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <h1 class="logo">🗂 브랜드 허브</h1>
+    <a href="add-brand.html" class="btn btn-primary">+ 새 브랜드 추가</a>
+  </div>
+</header>
+
+<main class="container">
+  <p class="lead">내가 기획한 브랜드들을 한 곳에서 정리하고 관리하는 페이지입니다.</p>
+  <div id="brand-grid" class="brand-grid">
+    <p class="empty-msg">불러오는 중...</p>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>브랜드 데이터는 <code>data/brands/</code> 폴더의 JSON 파일로 관리됩니다. 새 브랜드는 "새 브랜드 추가" 화면에서 만들 수 있습니다.</p>
+</footer>
+
+<script src="assets/js/index.js"></script>
+</body>
+</html>
