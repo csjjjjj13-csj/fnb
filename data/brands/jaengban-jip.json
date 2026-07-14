@@ -6,7 +6,12 @@
   "createdAt": "2026-01-01T00:00:00.000Z",
   "logo": "images/jaengban-jip/1783928526028-로고.png",
   "brandImages": [],
-  "presentations": [],
+  "presentations": [
+    {
+      "title": "쟁반집 사업계획서",
+      "path": "files/jaengban-jip/1784012182182-쟁반집.pptx"
+    }
+  ],
   "overview": {
     "oneLiner": "제철 안주를 정성껏 차려내는 동네 술상집",
     "story": "쟁반집은 큰 쟁반에 정성껏 담아내는 한 상 차림에서 이름을 따왔습니다.",
